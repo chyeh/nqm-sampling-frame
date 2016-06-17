@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 
 	"github.com/spf13/viper"
 )
@@ -25,11 +27,24 @@ func main() {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		fmt.Println("No configuration file loaded - using defaults")
+		log.Fatalln("Error:", err)
 	}
 
-	go pull(viper.GetString("fastbatServer"), viper.GetDuration("interval"))
-	go update()
+	fastbatServer := viper.GetString("fastbatServer")
+	interval := viper.GetDuration("interval")
+
+	databaseInit()
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		fmt.Println()
+		DB.Close()
+		os.Exit(0)
+	}()
+
+	go pull(fastbatServer, interval)
+	go update(interval)
 
 	select {}
 }
