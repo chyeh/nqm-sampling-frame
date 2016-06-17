@@ -10,7 +10,7 @@ SET NAMES 'utf8';
 UPDATE nqm_target SET tg_available=true
 WHERE tg_host IN (
 EOM
-awk '{print "\""$2"\","} END{print "\""$2"\""}' var/data/ipfile.samp >> var/sql/updateNqmTargetAvailable.sql
+awk '{print "\""$2"\","}' var/data/ipfile.samp | sed '$s/,$//' >> var/sql/updateNqmTargetAvailable.sql
 cat >> var/sql/updateNqmTargetAvailable.sql <<-EOM
 );
 EOM
@@ -20,7 +20,7 @@ SET NAMES 'utf8';
 UPDATE nqm_target SET tg_status=true
 WHERE tg_host IN (
 EOM
-awk '{print "\""$2"\","} END{print "\""$2"\""}' var/data/ipfile.samp >> var/sql/updateNqmTargetStatus.sql
+awk '{print "\""$2"\","}' var/data/ipfile.samp | sed '$s/,$//' >> var/sql/updateNqmTargetStatus.sql
 cat >> var/sql/updateNqmTargetStatus.sql <<-EOM
 );
 EOM
