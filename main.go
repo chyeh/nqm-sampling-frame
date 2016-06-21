@@ -30,14 +30,9 @@ func main() {
 	}
 
 	loadConfigFile()
-
-	fastbatServer := viper.GetString("fastbatServer")
-	interval := viper.GetDuration("interval")
-
 	dbInit()
 
-	go pull(fastbatServer, interval)
-	go update(interval)
+	go generate()
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
