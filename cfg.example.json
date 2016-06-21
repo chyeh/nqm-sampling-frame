@@ -1,0 +1,5 @@
+{
+	"interval": 10,
+	"fastbatServer": "http://127.0.0.1:80",
+  "database": "root:password@tcp(127.0.0.1:3306)/my_db?loc=Local&parseTime=true"
+}
