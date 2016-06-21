@@ -1,22 +1,40 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 
-	"github.com/spf13/viper"
+	"github.com/chyeh/viper"
+	"github.com/spf13/pflag"
+	"github.com/toolkits/file"
 )
+
+func getFileNameWithoutExtension(filename string) string {
+	return strings.TrimSuffix(filename, filepath.Ext(filename))
+}
 
 func init() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	pflag.CommandLine.StringP("config", "c", "cfg.json", "configuration file")
+	viper.BindPFlag("config", pflag.Lookup("config"))
 }
 
 func main() {
-	viper.SetConfigName("cfg")
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	pflag.Parse()
+
+	cfgPath := viper.GetString("config")
+	if !file.IsExist(cfgPath) {
+		log.Fatalln("Configuration file [", cfgPath, "] doesn't exist")
+	}
+
+	viper.SetConfigName(getFileNameWithoutExtension(cfgPath))
 
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
