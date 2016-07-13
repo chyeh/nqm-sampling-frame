@@ -2,8 +2,9 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 const (

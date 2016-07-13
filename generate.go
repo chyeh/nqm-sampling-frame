@@ -3,12 +3,12 @@ package main
 import (
 	"time"
 
-	"github.com/chyeh/viper"
+	"github.com/Cepave/open-falcon-backend/common/vipercfg"
 )
 
 func generate() {
-	fastbatServer := viper.GetString("fastbatServer")
-	interval := viper.GetDuration("interval")
+	fastbatServer := vipercfg.Config().GetString("fastbatServer")
+	interval := vipercfg.Config().GetDuration("interval")
 
 	ticker := time.NewTicker(time.Minute * interval)
 	for {

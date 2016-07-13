@@ -3,9 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
-	"github.com/chyeh/viper"
+	"github.com/Cepave/open-falcon-backend/common/vipercfg"
+	log "github.com/Sirupsen/logrus"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -24,7 +25,7 @@ func dbConnInit(dsn string) (err error) {
 }
 
 func dbInit() {
-	err := dbConnInit(viper.GetString("database"))
+	err := dbConnInit(vipercfg.Config().GetString("database"))
 
 	if err != nil {
 		log.Fatalln(err)

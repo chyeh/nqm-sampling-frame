@@ -1,35 +1,32 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/chyeh/viper"
+	"github.com/Cepave/open-falcon-backend/common/logruslog"
+	"github.com/Cepave/open-falcon-backend/common/vipercfg"
 	"github.com/spf13/pflag"
 )
 
-func init() {
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	pflag.CommandLine.StringP("config", "c", "cfg.json", "configuration file")
-	viper.BindPFlag("config", pflag.Lookup("config"))
-	pflag.CommandLine.BoolP("version", "v", false, "show version")
-	viper.BindPFlag("version", pflag.Lookup("version"))
-}
-
 func main() {
-	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
-	pflag.Parse()
+	vipercfg.Parse()
+	vipercfg.Bind()
 
-	if viper.GetBool("version") {
+	if vipercfg.Config().GetBool("version") {
 		fmt.Println(VERSION)
 		os.Exit(0)
 	}
 
-	loadConfigFile()
+	if vipercfg.Config().GetBool("help") {
+		pflag.Usage()
+		os.Exit(0)
+	}
+
+	vipercfg.Load()
+	logruslog.Init()
 	dbInit()
 
 	go generate()
